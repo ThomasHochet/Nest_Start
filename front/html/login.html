@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Se connecter</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../js/navbar.js"></script>
+  <script src="../js/tools.js"></script>
+</head>
+<body>
+
+  <div w3-include-html="navbar.html"></div>
+
+  <div class="flex justify-center bg-indigo-100 min-h-screen">
+    <div class="w-full max-w-xs">
+      <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 my-32">
+        <div class="mb-4">
+          <label class="block text-grey-darker text-sm font-bold mb-2" for="username">
+            Email
+          </label>
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Email">
+        </div>
+        <div class="mb-6">
+          <label class="block text-grey-darker text-sm font-bold mb-2" for="password">
+            Mot de passe
+          </label>
+          <input class="shadow appearance-none border border-red rounded w-full py-2 px-3 text-grey-darker mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="******************">
+        </div>
+        <div class="flex items-center justify-between">
+          <button class="bg-blue hover:bg-blue-dark text-dark font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline bg-indigo-200" type="button" id="button">
+            Se connecter
+          </button>
+        </div>
+      </form>
+    </div>
+    </div>
+  
+</body>
+<script>
+  includeHTML();
+  loadDataNavbar();
+
+  function login() {
+    const email = document.querySelector('#username').value;
+    const pwd = document.querySelector('#password').value;
+    console.log(email);
+    fetch('http://localhost:4567/auth/login', {
+      method: 'POST',
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username: email, password: pwd
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if(data.access_token) {
+          localStorage.setItem("token", JSON.stringify(data));
+          setTimeout(() => {
+            window.location.href = "../index.html";
+          }, 1500);
+        }
+      })
+  }
+
+  const button = document.querySelector('#button');
+  button.addEventListener("click", () => {
+    login();
+  })
+</script>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../js/tools.js"></script>
+  <script src="../js/navbar.js"></script>
+  <title></title>
+</head>
+<body>
+  <div w3-include-html="navbar.html"></div>
+  <div class="flex items-center bg-indigo-100 w-screen min-h-screen">
+    <div class="container ml-auto mr-auto flex flex-wrap" id="container">
+    </div>
+  </div>
+</body>
+<script>
+  includeHTML();
+  loadDataNavbar();
+
+  function loadProductCategory() {
+    const container = document.querySelector('#container');
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    fetch(`http://localhost:4567/category/${id}/products`)
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(el => {
+          const card = document.createElement('div');
+          card.className = 'w-full md:w-1/2 lg:w-1/4 pl-5 pr-5 mb-5 lg:pl-2 lg:pr-2 cursor-pointer';
+
+          const cardContent = document.createElement('div');
+          cardContent.className = 'bg-white rounded-lg m-h-64 p-2 transform hover:translate-y-2 hover:shadow-xl transition duration-300';
+
+          const figure = document.createElement('figure');
+          figure.className = 'mb-2';
+          figure.style.width = '288px';
+          figure.style.height = '256px';
+          const img = document.createElement('img');
+          img.src = el.image;
+          img.style.objectFit = 'fill';
+          figure.appendChild(img);
+
+          //
+          const rounded = document.createElement('div');
+          rounded.className = 'rounded-lg p-4 bg-gray-600 flex flex-col';
+          
+          const roundedTitleDiv = document.createElement('div');
+          const title = document.createElement('h5');
+          title.className = 'text-white text-2xl font-bold leading-none';
+          title.innerText = el.name
+          roundedTitleDiv.appendChild(title);
+
+          const roundedPriceDiv = document.createElement('div');
+          roundedPriceDiv.className = 'flex items-center';
+          const priceDiv = document.createElement('div');
+          priceDiv.className = 'text-lg text-white font-light'
+          priceDiv.innerText = el.price + "€"
+
+          const button = document.createElement('button');
+          button.innerText = "Détail";
+          button.className = "rounded-lg px-4 py-2 bg-indigo-200 text-white-100 hover:bg-indigo-600 hover:text-white duration-300";
+          button.addEventListener("click", () => {
+            window.location.href = `detail.html?id=${el.id}`; 
+          })
+
+          roundedPriceDiv.appendChild(priceDiv);
+
+          rounded.appendChild(roundedTitleDiv);
+          rounded.appendChild(roundedPriceDiv);
+          rounded.appendChild(button);
+
+          cardContent.appendChild(figure);
+          cardContent.appendChild(rounded);
+          
+          card.appendChild(cardContent);
+
+          container.appendChild(card);
+        });
+      });
+  }
+  loadProductCategory();
+</script>
+</html>
